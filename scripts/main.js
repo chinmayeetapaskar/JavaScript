@@ -1,94 +1,77 @@
-
-var DETAIL_IMAGE_SELECTOR = '[data-image-role="target"]';
-var DETAIL_TITLE_SELECTOR = '[data-image-role="title"]';
-var THUMBNAIL_LINK_SELECTOR = '[data-image-role="trigger"]';
-var BUTTON_PREVIOUS_SELECTOR = '[button-role="previous"]';
-var BUTTON_NEXT_SELECTOR = '[button-role="next"]';
-var imagePosition = 0;
+var DETAIL_IMAGE_SELECTOR = "[data-image-role=\"target\"]";
+var DETAIL_TITLE_SELECTOR = "[data-image-role=\"title\"]";
+var THUMBNAIL_LINK_SELECTOR = "[data-image-role=\"trigger\"]";
+var BUTTON_PREVIOUS_SELECTOR = "[button-role=\"previous\"]";
+var BUTTON_NEXT_SELECTOR = "[button-role=\"next\"]";
+var imagePos = 0;
 
 function setDetails(imageUrl, titleText) {
-  'use strict';
+  "use strict";
   var detailImage = document.querySelector(DETAIL_IMAGE_SELECTOR);
-  detailImage.setAttribute('src', imageUrl);
+  detailImage.setAttribute("src", imageUrl);
 
   var detailTitle = document.querySelector(DETAIL_TITLE_SELECTOR);
   detailTitle.textContent = titleText;
 }
 
 function imageFromThumb(thumbnail) {
-  'use strict';
-  return thumbnail.getAttribute('data-image-url');
+  "use strict";
+  return thumbnail.getAttribute("data-image-url");
 }
 
 function titleFromThumb(thumbnail) {
-  'use strict';
-  return thumbnail.getAttribute('data-image-title');
+  "use strict";
+  return thumbnail.getAttribute("data-image-title");
 }
 
 function setDetailsFromThumb(thumbnail) {
-  'use strict';
+  "use strict";
   setDetails(imageFromThumb(thumbnail), titleFromThumb(thumbnail));
 }
 
 function addThumbClickHandler(thumb) {
-  'use strict';
-  thumb.addEventListener('click', function(event) {
+  "use strict";
+  thumb.addEventListener("click", function(event) {
     event.preventDefault();
     setDetailsFromThumb(thumb);
   });
 }
 
 function getThumbnailsArray() {
-  'use strict';
+  "use strict";
   var thumbnails = document.querySelectorAll(THUMBNAIL_LINK_SELECTOR);
   var thumbnailsArray = [].slice.call(thumbnails);
   return thumbnailsArray;
 }
+
 function previousClickHandler(thumbnails) {
-'use strict'
-/*  if(thumbnails[index]==0)
-  index = thumbnails.length;
-   else if (thumbnails[index]==thumbnails.length) {
-     index= index-1;
-   }
-   else {
-     index=index-1;
-   }*/
-   if (imagePosition > 0) {
-   imagePosition--;
-   setDetailsFromThumb(thumbnails[imagePosition]);
- } else if(imagePosition = 0){
-   imagePosition = 0;
- }
- else {
-   imagePosition = thumbnails.length-1;
-   setDetailsFromThumb(thumbnails[imagePosition])
- }
- }
+  "use strict";
 
-
-
-function nextClickHandler(thumbnails){
-  'use strict'
-    /* if(thumbnails[index]==0)
-    index = index+1;
-     else if (thumbnails[index]==thumbnails.length) {
-       index =0;
-     }
-     else {
-       index++;
-     }*/
-     imagePosition++;
-     if (imagePosition < thumbnails.length) {
-    setDetailsFromThumb(thumbnails[imagePosition]);
-  }else if (imagePosition = (thumbnails.length-1)) {
-    imagePosition = 0;
-    setDetailsFromThumb(thumbnails[imagePosition])
+  if (imagePos > 0) {
+    imagePos--;
+    setDetailsFromThumb(thumbnails[imagePos]);
   }
   else {
-    imagePosition = thumbnails.length - 1;
+    imagePos = thumbnails.length - 1;
+    setDetailsFromThumb(thumbnails[imagePos]);
   }
+}
+
+
+
+function nextClickHandler(thumbnails) {
+  "use strict";
+
+  imagePos++;
+  if (imagePos < thumbnails.length) {
+    setDetailsFromThumb(thumbnails[imagePos]);
+  } else if (imagePos == (thumbnails.length)) {
+    imagePos = 0;
+    setDetailsFromThumb(thumbnails[imagePos]);
+  } else {
+    imagePos = thumbnails.length - 1;
   }
+}
 
 //Algorithm:
 // 1. Get the list of thumbnails getThumbnailsArray();
@@ -96,26 +79,26 @@ function nextClickHandler(thumbnails){
 // 3. Change the image on Display image
 
 function initializeEvents() {
-  'use strict';
+  "use strict";
   var thumbnails = getThumbnailsArray();
   thumbnails.forEach(addThumbClickHandler);
 
   for (var i = 0; i < thumbnails.length; i++) {
     (function(index) {
       thumbnails[index].addEventListener("click", function() {
-        imagePosition = index;
+        imagePos = index;
       });
     })(i);
   }
 
-var previous = document.querySelector(BUTTON_PREVIOUS_SELECTOR);
-previous.addEventListener('click',function(){
-  previousClickHandler(thumbnails);
-});
-var next = document.querySelector(BUTTON_NEXT_SELECTOR);
-next.addEventListener('click',function(){
-  nextClickHandler(thumbnails);
-});
+  var previous = document.querySelector(BUTTON_PREVIOUS_SELECTOR);
+  previous.addEventListener("click", function() {
+    previousClickHandler(thumbnails);
+  });
+  var next = document.querySelector(BUTTON_NEXT_SELECTOR);
+  next.addEventListener("click", function() {
+    nextClickHandler(thumbnails);
+  });
 
 }
 
